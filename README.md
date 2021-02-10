@@ -51,7 +51,7 @@ Custom Prompt Shell Settings for Bash
 
         wget https://git.sr.ht/~heckyel/hyperterm/blob/master/install.sh -O "$HOME/install.sh"
 
-2. Download file `install.sh`
+2. Run file `install.sh`
 
         bash "$HOME/install.sh"
 
@@ -174,7 +174,7 @@ Custom Prompt Shell Settings for Bash
 
         wget https://notabug.org/heckyel/hyperterm/raw/master/uninstall.sh -O "$HOME/uninstall.sh"
 
-2. Download file `uninstall.sh`:
+2. Run file `uninstall.sh`:
 
         bash "$HOME/uninstall.sh"
 
