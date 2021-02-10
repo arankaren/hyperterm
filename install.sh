@@ -253,5 +253,5 @@ echo -e '\033[0;36m       /____/_/                                          '
 echo -e '\033[m'
 msg "Para evitar problemas y mantener su shell, habilite solo las funciones que realmente desea utilizar desde $HOME/.hyperterm/_custom.sh" \
     "To avoid issues and to keep your shell lean, please enable only features you really want to use from $HOME/.hyperterm/_custom.sh"
-msg "Puede reportarnos errores en \033[0;36mhttps://notabug.org/heckyel/hyperterm/issues \033[0m" \
-    "You can report errors issues in \033[0;36mhttps://notabug.org/heckyel/hyperterm/issues \033[0m"
+msg "Puede reportarnos errores en \033[0;36mhttps://todo.sr.ht/~heckyel/hyperterm \033[0m" \
+    "You can report errors issues in \033[0;36mhttps://todo.sr.ht/~heckyel/hyperterm \033[0m"

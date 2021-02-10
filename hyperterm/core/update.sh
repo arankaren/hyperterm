@@ -85,8 +85,11 @@ function updbashrc() {
             msg "¡Hurra! HyperTerm se ha actualizado y/o está en la versión actual." \
                 "Hooray! HyperTerm has been updated and/or is at the current version."
 
-            msg "Consigue tu copia de HyperTerm en: https://notabug.org/heckyel/hyperterm" \
-                "Get your HyperTerm swag at: https://notabug.org/heckyel/hyperterm"
+            msg "Puede reportarnos errores en \033[0;36mhttps://todo.sr.ht/~heckyel/hyperterm \033[0m" \
+                "You can report errors issues in \033[0;36mhttps://todo.sr.ht/~heckyel/hyperterm \033[0m"
+
+            msg "Consigue tu copia de HyperTerm en: https://git.sr.ht/~heckyel/hyperterm" \
+                "Get your HyperTerm copy on: https://git.sr.ht/~heckyel/hyperterm"
             printf '%b\n' "$RESET"
         else
             if [[ $(_url_exists "$URL") -eq 0 ]]; then
