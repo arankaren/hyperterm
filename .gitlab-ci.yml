@@ -1,0 +1,77 @@
+image: debian:sid
+
+before_script:
+  - apt-get update -y
+  - apt-get install -y locales
+  - sed -i 's/# \(es_ES.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  - sed -i 's/# \(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  - export LANG=es_ES.UTF-8 LANGUAGE=es_ES
+
+shasums:
+  script:
+    - cp -rv ./hyperterm/ "$HOME/.hyperterm/"
+    - cp -v .bash* "$HOME"
+    - cp -v ./hyperterm/_custom.sh "$HOME"
+    - rm -rfv hyperterm/
+    - (cd "$HOME/.hyperterm/" && sha512sum -c hyperterm.sha512)
+    - (cd "$HOME" && bash -x .bashrc)
+
+bashrc:
+  script:
+    - apt-get install -y xz-utils shellcheck
+    - shellcheck .bash_profile
+    - shellcheck ./hyperterm/hyperterm.sh
+    - shellcheck ./hyperterm/_custom.sh
+
+build:
+  script:
+    - apt-get install -y xz-utils shellcheck
+    - shellcheck build.sh
+    - bash -x build.sh
+
+core:
+  script:
+    - apt-get install -y xz-utils shellcheck
+    - shellcheck hyperterm/core/autocomplete.sh
+    - shellcheck hyperterm/core/colors.sh
+    - shellcheck hyperterm/core/git.sh
+    - shellcheck hyperterm/core/languages.sh
+    - shellcheck hyperterm/core/status.sh
+    - shellcheck hyperterm/core/update.sh
+
+themes:
+  script:
+    - apt-get install -y xz-utils shellcheck
+    - shellcheck hyperterm/themes/default.sh
+    - shellcheck hyperterm/themes/joy.sh
+    - shellcheck hyperterm/themes/light_theme.sh
+    - shellcheck hyperterm/themes/minterm.sh
+    - shellcheck hyperterm/themes/pure.sh
+    - shellcheck hyperterm/themes/special.sh
+
+tools:
+  script:
+    - apt-get install -y xz-utils shellcheck
+    - shellcheck hyperterm/tools/aliases.sh
+    - shellcheck hyperterm/tools/compress.sh
+    - shellcheck hyperterm/tools/export.sh
+    - shellcheck hyperterm/tools/listuser.sh
+    - shellcheck hyperterm/tools/network.sh
+    - shellcheck hyperterm/tools/proxy.sh
+    - shellcheck hyperterm/tools/rar2zip.sh
+    - shellcheck hyperterm/tools/ruby.sh
+    - shellcheck hyperterm/tools/ssh-agent.sh
+    - shellcheck hyperterm/tools/sysinfo.sh
+    - shellcheck hyperterm/tools/virtualenv.sh
+
+install:
+  script:
+    - apt-get install -y xz-utils shellcheck git
+    - shellcheck install.sh
+    - bash -x install.sh -s
+
+uninstall:
+  script:
+    - apt-get install -y xz-utils shellcheck
+    - shellcheck uninstall.sh
+    - bash -x uninstall.sh -s
