@@ -85,8 +85,8 @@ function updbashrc() {
             msg "¡Hurra! HyperTerm se ha actualizado y/o está en la versión actual." \
                 "Hooray! HyperTerm has been updated and/or is at the current version."
 
-            msg "Puede reportarnos errores en \033[0;36mhttps://todo.sr.ht/~heckyel/hyperterm \033[0m" \
-                "You can report errors issues in \033[0;36mhttps://todo.sr.ht/~heckyel/hyperterm \033[0m"
+            msg "Puede reportarnos errores en https://todo.sr.ht/~heckyel/hyperterm" \
+                "You can report errors issues in https://todo.sr.ht/~heckyel/hyperterm"
 
             msg "Consigue tu copia de HyperTerm en: https://git.sr.ht/~heckyel/hyperterm" \
                 "Get your HyperTerm copy on: https://git.sr.ht/~heckyel/hyperterm"
