@@ -1,0 +1,57 @@
+image: debian/sid
+packages:
+  - locales
+  - git
+  - shellcheck
+  - xz-utils
+tasks:
+  - prepare: |
+      sed -i 's/# \(es_ES.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+      sed -i 's/# \(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+      export LANG=es_ES.UTF-8 LANGUAGE=es_ES
+  - bashrc: |
+      shellcheck .bash_profile
+      shellcheck ./hyperterm/hyperterm.sh
+      shellcheck ./hyperterm/_custom.sh
+  - build: |
+      shellcheck build.sh
+      bash -x build.sh
+  - core: |
+      shellcheck hyperterm/core/autocomplete.sh
+      shellcheck hyperterm/core/colors.sh
+      shellcheck hyperterm/core/git.sh
+      shellcheck hyperterm/core/languages.sh
+      shellcheck hyperterm/core/status.sh
+      shellcheck hyperterm/core/update.sh
+  - themes: |
+      shellcheck hyperterm/themes/default.sh
+      shellcheck hyperterm/themes/joy.sh
+      shellcheck hyperterm/themes/light_theme.sh
+      shellcheck hyperterm/themes/minterm.sh
+      shellcheck hyperterm/themes/pure.sh
+      shellcheck hyperterm/themes/special.sh
+  - tools: |
+      shellcheck hyperterm/tools/aliases.sh
+      shellcheck hyperterm/tools/compress.sh
+      shellcheck hyperterm/tools/export.sh
+      shellcheck hyperterm/tools/listuser.sh
+      shellcheck hyperterm/tools/network.sh
+      shellcheck hyperterm/tools/proxy.sh
+      shellcheck hyperterm/tools/rar2zip.sh
+      shellcheck hyperterm/tools/ruby.sh
+      shellcheck hyperterm/tools/ssh-agent.sh
+      shellcheck hyperterm/tools/sysinfo.sh
+      shellcheck hyperterm/tools/virtualenv.sh
+  - install: |
+      shellcheck install.sh
+      bash -x install.sh -s
+  - uninstall: |
+      shellcheck uninstall.sh
+      bash -x uninstall.sh -s
+  - shasums: |
+      cp -rv ./hyperterm/ "$HOME/.hyperterm/"
+      cp -v .bash* "$HOME"
+      cp -v ./hyperterm/_custom.sh "$HOME"
+      rm -rfv hyperterm/
+      (cd "$HOME/.hyperterm/" && sha512sum -c hyperterm.sha512)
+      (cd "$HOME" && bash -x .bashrc)
