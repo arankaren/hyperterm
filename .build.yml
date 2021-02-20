@@ -7,7 +7,9 @@ packages:
 tasks:
   - test: |
       ls -l
+      cd hyperterm
   - bashrc: |
+      ls -l
       shellcheck .bash_profile
       shellcheck ./hyperterm/hyperterm.sh
       shellcheck ./hyperterm/_custom.sh
