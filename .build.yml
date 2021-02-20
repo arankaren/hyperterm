@@ -10,8 +10,9 @@ tasks:
       shellcheck hyperterm/hyperterm/hyperterm.sh
       shellcheck hyperterm/hyperterm/_custom.sh
   - build: |
-      shellcheck hyperterm/build.sh
-      bash -x hyperterm/build.sh
+      cd hyperterm
+      shellcheck build.sh
+      bash -x build.sh
   - core: |
       shellcheck hyperterm/hyperterm/core/autocomplete.sh
       shellcheck hyperterm/hyperterm/core/colors.sh
@@ -46,7 +47,7 @@ tasks:
       bash -x hyperterm/uninstall.sh -s
   - shasums: |
       cd hyperterm
-      cp -rv /hyperterm/ "$HOME/.hyperterm/"
+      cp -rv ./hyperterm/ "$HOME/.hyperterm/"
       cp -v .bash* "$HOME"
       cp -v ./hyperterm/_custom.sh "$HOME"
       rm -rfv hyperterm/
