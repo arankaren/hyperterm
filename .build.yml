@@ -5,10 +5,6 @@ packages:
   - shellcheck
   - xz-utils
 tasks:
-  - prepare: |
-      sed -i 's/# \(es_ES.UTF-8 UTF-8\)/\1/' /etc/locale.gen
-      sed -i 's/# \(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
-      export LANG=es_ES.UTF-8 LANGUAGE=es_ES
   - bashrc: |
       shellcheck .bash_profile
       shellcheck ./hyperterm/hyperterm.sh
