@@ -5,6 +5,8 @@ packages:
   - shellcheck
   - xz-utils
 tasks:
+  - test: |
+      ls -l
   - bashrc: |
       shellcheck .bash_profile
       shellcheck ./hyperterm/hyperterm.sh
