@@ -14,6 +14,7 @@ function vtovp9() {
             *.mp4)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.mp4}".webm  ;;
             *.mpg)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.mpg}".webm  ;;
             *.ogv)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.ogv}".webm  ;;
+            *.m2ts) ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.m2ts}".webm ;;
             *.ts)   ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.ts}".webm   ;;
             *.webm) ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.webm}".webm ;;
             *.wmv)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.wmv}".webm  ;;
