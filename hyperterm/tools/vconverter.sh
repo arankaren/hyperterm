@@ -14,6 +14,7 @@ function vtovp9() {
             *.mp4)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.mp4}".webm  ;;
             *.mpg)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.mpg}".webm  ;;
             *.ogv)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.ogv}".webm  ;;
+            *.ts)   ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.ts}".webm   ;;
             *.webm) ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.webm}".webm ;;
             *.wmv)  ffmpeg -i "$1" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${1%.wmv}".webm  ;;
             *)      msg_err "El formato de '$1' no esta listado :(" \
@@ -55,6 +56,7 @@ function alltovp9() {
                     *.mp4)  ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.mp4}".webm  ;;
                     *.mpg)  ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.mpg}".webm  ;;
                     *.m2ts) ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.m2ts}".webm ;;
+                    *.ts)   ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.ts}".webm   ;;
                     *.ogv)  ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.ogv}".webm  ;;
                     *.vob)  ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.vob}".webm  ;;
                     *.wmv)  ffmpeg -i "$FILE_NAME" -c:v libvpx-vp9 -crf 33 -threads 8 -b:v 0 -b:a 128k -c:a libopus -map_metadata -1 "${FILE_NAME%.wmv}".webm  ;;
