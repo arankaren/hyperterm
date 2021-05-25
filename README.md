@@ -49,29 +49,29 @@ Custom Prompt Shell Settings for Bash
 
 1. Download file `install.sh`:
 
-        wget https://git.sr.ht/~heckyel/hyperterm/blob/master/install.sh -O "$HOME/install.sh"
+        $ wget https://git.sr.ht/~heckyel/hyperterm/blob/master/install.sh -O "$HOME/install.sh"
 
 2. Run file `install.sh`
 
-        bash "$HOME/install.sh"
+        $ bash "$HOME/install.sh"
 
     or in silent mode:
 
-        bash "$HOME/install.sh" -s
+        $ bash "$HOME/install.sh" -s
 
     use -h to show help:
 
-        bash "$HOME/install.sh" -h
+        $ bash "$HOME/install.sh" -h
 
 3. Delete file `install.sh`:
 
-        rm -v "$HOME/install.sh"
+        $ rm -v "$HOME/install.sh"
 
 ### Manual
 
 1. As a suggestion, make a backup of your Prompt Shell.
 
-        for f in .bashrc .bash_aliases .bash_profile; do cp -v "$HOME/$f" "$HOME/$f.bak"; done
+        $ for f in .bashrc .bash_aliases .bash_profile; do cp -v "$HOME/$f" "$HOME/$f.bak"; done
 
 2. Clone the HyperTerm repository:
 
@@ -80,23 +80,23 @@ Custom Prompt Shell Settings for Bash
 
 3. Copy the HyperTerm files to your Local Directory
 
-        install -d -m755 "$HOME/.hyperterm"
+        $ install -d -m755 "$HOME/.hyperterm"
 
-        cp -rv $HOME/bash/hyperterm/* "$HOME/.hyperterm"
+        $ cp -rv $HOME/bash/hyperterm/* "$HOME/.hyperterm"
 
-        cp -v $HOME/bash/.bash* "$HOME"
+        $ cp -v $HOME/bash/.bash* "$HOME"
 
-        cp -v $HOME/bash/hyperterm/_custom.sh "$HOME/.hyperterm"
+        $ cp -v $HOME/bash/hyperterm/_custom.sh "$HOME/.hyperterm"
 
-        install -m644 $HOME/bash/template/bash_profile.template.bash "$HOME/.bashrc"
+        $ install -m644 $HOME/bash/template/bash_profile.template.bash "$HOME/.bashrc"
 
 4. Open your terminal again or execute the next instruction
 
-        . $HOME/.bashrc*
+        $ . $HOME/.bashrc*
 
 5. Delete the repository if you are not interested in having it stored
 
-        rm -rfv bash
+        $ rm -rfv bash
 
 6. Done!
 
@@ -104,13 +104,13 @@ Custom Prompt Shell Settings for Bash
 
 * Optionally you can install trash-cli, pkgfile, bind-tools, bash-completion
 
-        pacman -S trash-cli
+        $ pacman -S trash-cli
 
-        pacman -S pkgfile
+        $ pacman -S pkgfile
 
-        pacman -S bind-tools
+        $ pacman -S bind-tools
 
-        pacman -S bash-completion
+        $ pacman -S bash-completion
 
 > [trash-cli](https://github.com/andreafrancia/trash-cli): is a utility to prevent accidental deletion when using the rm -rf command
 
@@ -168,29 +168,29 @@ Custom Prompt Shell Settings for Bash
 
 1. Download file `uninstall.sh`:
 
-        wget https://git.sr.ht/~heckyel/hyperterm/blob/master/uninstall.sh -O "$HOME/uninstall.sh"
+        $ wget https://git.sr.ht/~heckyel/hyperterm/blob/master/uninstall.sh -O "$HOME/uninstall.sh"
 
     o
 
-        wget https://notabug.org/heckyel/hyperterm/raw/master/uninstall.sh -O "$HOME/uninstall.sh"
+        $ wget https://notabug.org/heckyel/hyperterm/raw/master/uninstall.sh -O "$HOME/uninstall.sh"
 
 2. Run file `uninstall.sh`:
 
-        bash "$HOME/uninstall.sh"
+        $ bash "$HOME/uninstall.sh"
 
 3. Delete file `uninstall.sh`:
 
-        rm -v "$HOME/uninstall.sh"
+        $ rm -v "$HOME/uninstall.sh"
 
 ### Manual
 
 If you want to leave your computer as it was, delete the files copied from step 3 with:
 
-    rm -vrf "$HOME/{.hyperterm/,.bashrc}"
+    $ rm -vrf "$HOME/{.hyperterm/,.bashrc}"
 
 and restore the ***.bak** files from step 1 by running:
 
-    for f in .bashrc .bash_aliases .bash_profile; do cp -v "$HOME/$f.bak" "$HOME/$f"; done
+    $ for f in .bashrc .bash_aliases .bash_profile; do cp -v "$HOME/$f.bak" "$HOME/$f"; done
 
 ## Hacking
 
