@@ -55,6 +55,6 @@ if [[ -f /usr/share/doc/pkgfile/command-not-found.bash ]]; then source /usr/shar
 #---------------
 # Trash-cli
 #---------------
-if command -v trash &> /dev/null; then alias rm='echo "This is not the command you are looking for."; false'; else true; fi
+# if command -v trash &> /dev/null; then alias rm='echo "This is not the command you are looking for."; false'; else true; fi
 # Then, if you really want to use rm, simply prepend a slash to bypass the alias:
 # \rm file-without-hope
