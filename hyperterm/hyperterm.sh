@@ -64,6 +64,9 @@ fi
 #Interactive Prompt
 PS2="${_psi:=$_psi}"
 
+# No double entries in the shell history.
+export HISTCONTROL=ignoreboth:erasedups
+
 # global unsets
 unset SYMBOL prompt _psi
 
