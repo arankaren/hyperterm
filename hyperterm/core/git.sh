@@ -330,3 +330,12 @@ _prompt_get_git_info() {
         printf '%b%s%b' "${BOLD}${LEMON}" "git:($output" "${BOLD}${LEMON})"
     fi
 }
+
+__prompt_git() {
+    if _prompt_is_on_git &> /dev/null; then
+        echo -n "${BOLD}${WHITE} on $RESET" && \
+            echo -n "$(_prompt_get_git_info "$@")" && \
+            echo -n "${BOLD}${RED}$(_get_git_progress)" && \
+            echo -n "$RESET"
+    fi
+}

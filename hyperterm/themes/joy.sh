@@ -18,11 +18,7 @@ _colors_bash "$@"
 \$(exitstatus)\
 \[${BOLD}${CYAN}\]\
 \342\224\200\
-\$( _prompt_is_on_git &> /dev/null && \
-  echo -n \"\[$RESET\]\" && \
-  echo -n \"\$(_prompt_get_git_info)\" && \
-  echo -n \"\[${BOLD}${RED}\]\$(_get_git_progress)\" && \
-  echo -n \"\[$RESET\]\")\
+\$(__prompt_git)\
 \[${BOLD}${CYAN}\]\342\224\200[\
 \[${RESET}\]\t\
 \[${BOLD}${CYAN}\]]\n\

@@ -13,11 +13,7 @@ _colors_bash "$@"
 \[${BOLD}${GREY}\]\h\[$RESET\] \
 \$(exitstatus)\[$RESET\] \
 \[${BOLD}${WHITE}\][\$PWD]\
-\$( _prompt_is_on_git &> /dev/null && \
-  echo -n \" \[${BOLD}${WHITE}\]on\[$RESET\] \" && \
-  echo -n \"\$(_prompt_get_git_info)\" && \
-  echo -n \"\[${BOLD}${RED}\]\$(_get_git_progress)\" && \
-  echo -n \"\[$RESET\]\")\
+\$(__prompt_git)\
 \n\[${BOLD}${CYAN}\]╰─➤\[${BOLD}${GREEN}\]$SYMBOL \[$RESET\]}"
 
 unset _psi
