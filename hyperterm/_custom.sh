@@ -14,6 +14,7 @@ if [[ -f $HOME/.hyperterm/themes/joy.sh ]]; then source "$HOME/.hyperterm/themes
 if [[ -f $HOME/.hyperterm/themes/light_theme.sh ]]; then source "$HOME/.hyperterm/themes/light_theme.sh"; else true; fi
 if [[ -f $HOME/.hyperterm/themes/minterm.sh ]]; then source "$HOME/.hyperterm/themes/minterm.sh"; else true; fi
 if [[ -f $HOME/.hyperterm/themes/pure.sh ]]; then source "$HOME/.hyperterm/themes/pure.sh"; else true; fi
+if [[ -f $HOME/.hyperterm/themes/simple.sh ]]; then source "$HOME/.hyperterm/themes/simple.sh"; else true; fi
 if [[ -f $HOME/.hyperterm/themes/special.sh ]]; then source "$HOME/.hyperterm/themes/special.sh"; else true; fi
 
 #---------------
@@ -25,6 +26,7 @@ prompt="${default}"
 #prompt="${light_theme}"
 #prompt="${minterm}"
 #prompt="${pure}"
+#prompt="${simple}"
 #prompt="${special}"
 
 #---------------
