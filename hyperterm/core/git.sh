@@ -7,19 +7,20 @@ function _symbols() {
     _colors_bash "$@"
 
     _synced_symbol="$(printf '%b\u2714' "${BOLD}${CYAN}")" # ✔
-    _dirty_synced_symbol="$(printf '%b\u002A' "${BOLD}${RED}")" # ∗
+    _d_synced_symbol="$(printf '%b|%b\u002A' "${BOLD}${LEMON}" "${BOLD}${RED}")" # ∗
     _unpushed_symbol="$(printf '%b\u2191' "${BOLD}${CYAN}")" # ↑
     _dirty_unpushed_symbol="$(printf '%b\u25B2' "${BOLD}${YELLOW}")" # ▲
     _unpulled_symbol="$(printf '%b\u25BD' "${BOLD}${GREEN}")" # ▽
     _dirty_unpulled_symbol="$(printf '%b\u25BC' "${BOLD}${RED}")" # ▼
     _stage_symbol="$(printf '%b\u2192\u004D' "${BOLD}${CYAN}")" # →M
     _unstage_symbol="$(printf '%b\u2190\u004D' "${BOLD}${RED}")" # ←M
+    _stage_unstage_symbol="$(printf '%b<M>' "${BOLD}${RED}")" # <M>
     _untracked_symbol="$(printf '%b\u003F' "${BOLD}${RED}")" # ?
     _newfile_symbol="$(printf '%b\u002B' "${BOLD}${CYAN}")" # +
-    _deleted_file_symbol="$(printf '%b\u2013' "${BOLD}${RED}")" # –
+    _deleted_file_symbol="$(printf '%bD' "${BOLD}${RED}")" # –
     _renamed_symbol="$(printf '%b\u2387 ' "${BOLD}${RED}")" # ⎇
     _unpushed_unpulled_symbol="$(printf '%b\u2B21' "${BOLD}${RED}")" # ⬡
-    _dirty_unpushed_unpulled_symbol="$(printf '%b\u2B22' "${BOLD}${RED}")" # ⬢
+    _d_unpush_unpull_symbol="$(printf '%b|%bdu' "${BOLD}${LEMON}" "${BOLD}${CYAN}")" # du
 }
 
 function _get_git_branch() {
@@ -101,11 +102,7 @@ _prompt_parse_git_ahead () {
 
     # If the remote branch is behind the local branch
     # or it has not been merged into origin (remote branch doesn't exist)
-    if (_prompt_is_branch1_behind_branch2 "$remote_branch" "$branch" ||
-	    ! _prompt_branch_exists "$remote_branch"); then
-        # printf our character
-        printf '%s' '0'
-    fi
+    if (_prompt_is_branch1_behind_branch2 "$remote_branch" "$branch" || ! _prompt_branch_exists "$remote_branch"); then echo -n "0"; else  echo -n "1"; fi
 }
 
 _prompt_parse_git_behind() {
@@ -122,17 +119,12 @@ _prompt_parse_git_behind() {
     #   Unsynced commit
 
     # If the local branch is behind the remote branch
-    if _prompt_is_branch1_behind_branch2 "$branch" "$remote_branch"; then
-        # printf our character
-        printf '%s' '0'
-    fi
+    if _prompt_is_branch1_behind_branch2 "$branch" "$remote_branch"; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_parse_git_dirty() {
     # If the git status has *any* changes (e.g. dirty), printf our character
-    if [[ -n "$(git status --porcelain 2> /dev/null)" ]]; then
-        printf '%s' '0'
-    fi
+    if [[ -n "$(git status --porcelain 2> /dev/null)" ]]; then echo -n '0'; else echo -n '1'; fi
 }
 
 # start counter on git
@@ -144,17 +136,12 @@ function _git_dirty_count() {
     if [[ "$_dirty_status" == 0 ]]; then
         local change_count
         change_count="$(echo "$_git_status" | wc -l | tr -d '[:space:]')"
-        if [[ "$change_count" == 1 ]]; then
-            printf '%b\u2022%s' "${BOLD}${GREY}" "$change_count"
-        elif [[ "$change_count" == 2 ]]; then
-            printf '%b\u2236%s' "${BOLD}${GREY}" "$change_count"
-        elif [[ "$change_count" == 3 ]]; then
-            printf '%b\u2026%s' "${BOLD}${GREY}" "$change_count"
-        else
-            printf '%b\u00BB%s' "${BOLD}${GREY}" "$change_count"
-        fi
-    else
-        printf ''
+        case $change_count in
+            1) printf '%b\u2022%s' "${BOLD}${GREY}" "$change_count";;
+            2) printf '%b\u2236%s' "${BOLD}${GREY}" "$change_count";;
+            3) printf '%b\u2026%s' "${BOLD}${GREY}" "$change_count";;
+            *) printf '%b\u00BB%s' "${BOLD}${GREY}" "$change_count";;
+        esac
     fi
 }
 # ends counter on git
@@ -165,11 +152,7 @@ function _prompt_parse_git_untracked() {
     untracked="$(git status 2>&1 | tee)"
     grep -E 'Untracked files:' <<<"$untracked" &> /dev/null
     evaltask=$?
-    if [ "$evaltask" -eq 0 ]; then
-        printf '%s' '0'
-    else
-        printf '%s' '1'
-    fi
+    if [ "$evaltask" -eq 0 ]; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_parse_git_newfile() {
@@ -178,11 +161,7 @@ function _prompt_parse_git_newfile() {
     newfile="$(git status 2>&1 | tee)"
     grep -E 'new file:' <<<"$newfile" &> /dev/null
     evaltask=$?
-    if [ "$evaltask" -eq 0 ]; then
-        printf '%s' '0'
-    else
-        printf '%s' '1'
-    fi
+    if [ "$evaltask" -eq 0 ]; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_parse_git_deleted_file() {
@@ -191,11 +170,7 @@ function _prompt_parse_git_deleted_file() {
     deleted_file="$(git status 2>&1 | tee)"
     grep -E 'deleted:' <<<"$deleted_file" &> /dev/null
     evaltask=$?
-    if [ "$evaltask" -eq 0 ]; then
-        printf '%s' '0'
-    else
-        printf '%s' '1'
-    fi
+    if [ "$evaltask" -eq 0 ]; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_parse_git_renamed() {
@@ -204,11 +179,7 @@ function _prompt_parse_git_renamed() {
     renamed="$(git status 2>&1 | tee)"
     grep -E 'renamed:' <<<"$renamed" &> /dev/null
     evaltask=$?
-    if [ "$evaltask" -eq 0 ]; then
-        printf '%s' '0'
-    else
-        printf '%s' '1'
-    fi
+    if [ "$evaltask" -eq 0 ]; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_parse_git_unstage() {
@@ -217,11 +188,7 @@ function _prompt_parse_git_unstage() {
     unstage="$(git status 2>&1 | tee)"
     grep -E 'not staged' <<<"$unstage" &> /dev/null
     evaltask=$?
-    if [ "$evaltask" -eq 0 ]; then
-        printf '%s' '0'
-    else
-        printf '%s' '1'
-    fi
+    if [ "$evaltask" -eq 0 ]; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_parse_git_stage() {
@@ -230,11 +197,7 @@ function _prompt_parse_git_stage() {
     stage="$(git status -s 2>&1 | tee)"
     grep -E 'M' <<<"$stage" &> /dev/null
     evaltask=$?
-    if [ "$evaltask" -eq 0 ]; then
-        printf '%s' '0'
-    else
-        printf '%s' '1'
-    fi
+    if [ "$evaltask" -eq 0 ]; then echo -n '0'; else echo -n '1'; fi
 }
 
 function _prompt_is_on_git() {
@@ -258,57 +221,91 @@ function _prompt_get_git_status() {
     branch_renamed="$(_prompt_parse_git_renamed)"
 
     # Iterate through all the cases and if it matches, then printf
-    if [[ "$dirty_branch" == 0 && "$branch_ahead" == 0 && "$branch_behind" == 0 ]]; then
-        printf '%s%s' "$_dirty_unpushed_unpulled_symbol" "$git_count"
+    case ${dirty_branch}${branch_ahead}${branch_behind}${branch_stage}${branch_unstage}${branch_newfile}${branch_untracked}${branch_deleted_file}${branch_renamed} in
 
-    elif [[ "$branch_ahead" == 0 && "$branch_behind" == 0 ]]; then
-        printf '%s%s' "$_unpushed_unpulled_symbol" "$git_count"
+        000111111) printf '%s%s' "$_d_unpush_unpull_symbol" "$git_count" ;;
+        100111111) printf '%s%s' "$_unpushed_unpulled_symbol" "$git_count" ;;
+        001111111) printf '%s%s' "$_dirty_unpushed_symbol" "$git_count" ;;
+        010111111) printf '%s%s' "$_dirty_unpulled_symbol" "$git_count" ;;
+        110111111) printf '%s%s' "$_unpulled_symbol" "$git_count" ;;
 
-    elif [[ "$dirty_branch" == 0 && "$branch_ahead" == 0 ]]; then
-        printf '%s%s' "$_dirty_unpushed_symbol" "$git_count"
+        011001111) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}" "$git_count";;
+        011000111) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}" "$git_count";;
+        011001101) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
+        011001011) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}" "$git_count" ;;
+        011001001) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        011000101) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count";;
+        011000001) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        011011111) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}" "$git_count";;
+        011010111) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}" "$git_count";;
+        011010101) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count" ;;
+        011010001) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        011011011) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_untracked_symbol}" "$git_count";;
+        011011101) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_deleted_file_symbol}" "$git_count";;
+        011110111) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}" "$git_count";;
+        011110011) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_untracked_symbol}" "$git_count";;
+        011111011) printf '%s%s' "${_d_synced_symbol}${_untracked_symbol}" "$git_count";;
+        011101001) printf '%s%s' "${_d_synced_symbol}${_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        011101001) printf '%s%s' "${_d_synced_symbol}${_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
+        011111110) printf '%s%s' "${_d_synced_symbol}${_renamed_symbol}" "$git_count";;
+        011110110) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
+        011110010) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        011010100) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count" ;;
+        011010000) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        011001010) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        011001000) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        011000110) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
+        011000010) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        011000000) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        011000100) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        011010010) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        011011010) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        011111010) printf '%s%s' "${_d_synced_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
 
-    elif [[ "$branch_ahead" == 0 ]]; then
-        printf '%s%s' "$_unpushed_symbol" "$git_count"
+        001001111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}" "$git_count";;
+        001000111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}" "$git_count";;
+        001001101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
+        001001011) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}" "$git_count";;
+        001001001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        001000101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count";;
+        001000001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        001011111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}" "$git_count";;
+        001010111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}" "$git_count" ;;
+        001010101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count" ;;
+        001010001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        001011011) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_untracked_symbol}" "$git_count";;
+        001011101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_deleted_file_symbol}" "$git_count";;
+        001110111) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}" "$git_count";;
+        001110011) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_untracked_symbol}" "$git_count";;
+        001111011) printf '%s%s' "${_d_unpush_unpull_symbol}${_untracked_symbol}" "$git_count";;
+        001101001) printf '%s%s' "${_d_unpush_unpull_symbol}${_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
+        001101101) printf '%s%s' "${_d_unpush_unpull_symbol}${_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
+        001111110) printf '%s%s' "${_d_unpush_unpull_symbol}${_renamed_symbol}" "$git_count";;
+        001110110) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
+        001110010) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        001010100) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count" ;;
+        001010000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        001001010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        001001000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        001000110) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
+        001000010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        001000000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        001000100) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
+        001010010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        001011010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
+        001111010) printf '%s%s' "${_d_unpush_unpull_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
 
-    elif [[ "$dirty_branch" == 0 && "$branch_behind" == 0 ]]; then
-        printf '%s%s' "$_dirty_unpulled_symbol" "$git_count"
+        101111111) printf '%s%s' "${_unpushed_symbol}" "$git_count" ;; # eg. ↑
+        111111111) printf '%s' "${_synced_symbol}" ;; # eg. ✔
 
-    elif [[ "$branch_behind" == 0 ]]; then
-        printf '%s%s' "$_unpulled_symbol" "$git_count"
+        *) echo -n "?" ;;
+    esac
 
-    elif [[ "$branch_unstage" == 0 && "$branch_untracked" == 0 ]]; then
-        printf '%s%s' "${_unstage_symbol}${_untracked_symbol}" "$git_count"
-
-    elif [[ "$branch_stage" == 0 && "$branch_untracked" == 0 ]]; then
-        printf '%s%s' "${_stage_symbol}${_untracked_symbol}" "$git_count"
-
-    elif [[ "$branch_stage" == 0 && "$branch_unstage" == 0 ]]; then
-        printf '%s%s' "$_unstage_symbol" "$git_count"
-
-    elif [[ "$branch_newfile" == 0 && "$branch_untracked" == 0 ]]; then
-        printf '%s%s' "${_newfile_symbol}${_untracked_symbol}" "$git_count"
-
-    elif [[ "$branch_untracked" == 0 ]]; then
-        printf '%s%s' "$_untracked_symbol" "$git_count"
-
-    elif [[ "$branch_stage" == 0 ]]; then
-        printf '%s%s' "$_stage_symbol" "$git_count"
-
-    elif [[ "$branch_newfile" == 0 ]]; then
-        printf '%s%s' "$_newfile_symbol" "$git_count"
-
-    elif [[ "$branch_deleted_file" == 0 ]]; then
-        printf '%s%s' "$_deleted_file_symbol" "$git_count"
-
-    elif [[ "$branch_renamed" == 0 ]]; then
-        printf '%s%s' "$_renamed_symbol" "$git_count"
-
-    elif [[ "$dirty_branch" == 0 ]]; then
-        printf '%s%s' "$_dirty_synced_symbol" "$git_count"
-
-    else # clean
-        printf '%s' "$_synced_symbol"
-    fi
+    #
+    #             dirty + unpushed = du                       stage + unstage = <M>
+    #              ∗               ↑              ⬡            →M             ←M                +                  ?                  D                 ⎇
+    # echo "${dirty_branch}${branch_ahead}${branch_behind}${branch_stage}${branch_unstage}${branch_newfile}${branch_untracked}${branch_deleted_file}${branch_renamed}"
+    #                 0            0              1              1                0               1                   1                 0                 1
 }
 
 _prompt_get_git_info() {
