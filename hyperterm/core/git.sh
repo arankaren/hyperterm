@@ -17,7 +17,7 @@ function _symbols() {
     _stage_unstage_symbol="$(printf '%b<M>' "${BOLD}${RED}")" # <M>
     _untracked_symbol="$(printf '%b\u003F' "${BOLD}${RED}")" # ?
     _newfile_symbol="$(printf '%b\u002B' "${BOLD}${CYAN}")" # +
-    _deleted_file_symbol="$(printf '%bD' "${BOLD}${RED}")" # –
+    _deleted_file_symbol="$(printf '%bD' "${BOLD}${RED}")" # D
     _renamed_symbol="$(printf '%b\u2387 ' "${BOLD}${RED}")" # ⎇
     _unpushed_unpulled_symbol="$(printf '%b\u2B21' "${BOLD}${RED}")" # ⬡
     _d_unpush_unpull_symbol="$(printf '%b|%bdu' "${BOLD}${LEMON}" "${BOLD}${CYAN}")" # du
