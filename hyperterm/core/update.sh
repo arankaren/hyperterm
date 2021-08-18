@@ -102,7 +102,7 @@ function updbashrc() {
                     install -m644 /tmp/hyperterm/hyperterm/core/$i "$HOME/.hyperterm/core/$i"
                 done
                 # themes
-                for i in default.sh joy.sh light_theme.sh pure.sh special.sh; do
+                for i in default.sh joy.sh light_theme.sh minterm.sh pure.sh simple.sh special.sh; do
                     install -m644 /tmp/hyperterm/hyperterm/themes/$i "$HOME/.hyperterm/themes/$i"
                 done
                 # tools
