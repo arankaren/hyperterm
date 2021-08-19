@@ -156,6 +156,10 @@ Custom Prompt Shell Settings for Bash
 
 ![Alt Pure](images/pure.png?raw=true "pure")
 
+#### simple
+
+![Alt Simple](images/simple.png?raw=true "simple")
+
 #### special
 
 ![Alt Special](images/special.png?raw=true "special")
