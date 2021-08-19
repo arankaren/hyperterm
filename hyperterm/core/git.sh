@@ -8,10 +8,10 @@ function _symbols() {
 
     _synced_symbol="$(printf '%b\u2714' "${BOLD}${CYAN}")" # ✔
     _d_synced_symbol="$(printf '%b|%b\u002A' "${BOLD}${LEMON}" "${BOLD}${RED}")" # ∗
-    _unpushed_symbol="$(printf '%b\u2191' "${BOLD}${CYAN}")" # ↑
-    _dirty_unpushed_symbol="$(printf '%b\u25B2' "${BOLD}${YELLOW}")" # ▲
-    _unpulled_symbol="$(printf '%b\u25BD' "${BOLD}${GREEN}")" # ▽
-    _dirty_unpulled_symbol="$(printf '%b\u25BC' "${BOLD}${RED}")" # ▼
+    _unpush_symbol="$(printf '%b\u2191' "${BOLD}${CYAN}")" # ↑
+    _d_unpush_symbol="$(printf '%b\u25B2' "${BOLD}${YELLOW}")" # ▲
+    _unpull_symbol="$(printf '%b\u25BD' "${BOLD}${GREEN}")" # ▽
+    _d_unpull_symbol="$(printf '%b\u25BC' "${BOLD}${RED}")" # ▼
     _stage_symbol="$(printf '%b\u2192\u004D' "${BOLD}${CYAN}")" # →M
     _unstage_symbol="$(printf '%b\u2190\u004D' "${BOLD}${RED}")" # ←M
     _stage_unstage_symbol="$(printf '%b<M>' "${BOLD}${RED}")" # <M>
@@ -19,7 +19,7 @@ function _symbols() {
     _newfile_symbol="$(printf '%b\u002B' "${BOLD}${CYAN}")" # +
     _deleted_file_symbol="$(printf '%bD' "${BOLD}${RED}")" # D
     _renamed_symbol="$(printf '%b\u2387 ' "${BOLD}${RED}")" # ⎇
-    _unpushed_unpulled_symbol="$(printf '%b\u2B21' "${BOLD}${RED}")" # ⬡
+    _unpush_unpull_symbol="$(printf '%b\u2B21' "${BOLD}${RED}")" # ⬡
     _d_unpush_unpull_symbol="$(printf '%b|%bdu' "${BOLD}${LEMON}" "${BOLD}${CYAN}")" # du
 }
 
@@ -144,6 +144,24 @@ function _git_dirty_count() {
         esac
     fi
 }
+
+function _git_behind_count() {
+    local __behind_count
+    __behind_count="$(git rev-list --left-right --count origin/master...HEAD | cut -f1 2> /dev/null)"
+    case $__behind_count in
+        0) echo -n '';;
+        *) echo -n "$__behind_count";;
+    esac
+}
+
+function _git_head_count() {
+    local __head_count
+    __head_count="$(git rev-list --left-right --count origin/master...HEAD | cut -f2 2> /dev/null)"
+    case $__head_count in
+        0) echo -n '';;
+        *) echo -n "$__head_count";;
+    esac
+}
 # ends counter on git
 
 function _prompt_parse_git_untracked() {
@@ -209,7 +227,9 @@ function _prompt_get_git_status() {
     _symbols "$@"
 
     # Grab the git dirty and git behind
-    git_count="$(_git_dirty_count)"
+    count_dirty="$(_git_dirty_count)"
+    count_behind="$(_git_behind_count)"
+    count_head="$(_git_head_count)"
     dirty_branch="$(_prompt_parse_git_dirty)"
     branch_ahead="$(_prompt_parse_git_ahead)"
     branch_behind="$(_prompt_parse_git_behind)"
@@ -222,82 +242,79 @@ function _prompt_get_git_status() {
 
     # Iterate through all the cases and if it matches, then printf
     case ${dirty_branch}${branch_ahead}${branch_behind}${branch_stage}${branch_unstage}${branch_newfile}${branch_untracked}${branch_deleted_file}${branch_renamed} in
+        111111111) printf '%s' "${_synced_symbol}";;
+        110111111) printf '%s%s' "${_unpull_symbol}" "$count_behind";;
+        101111111) printf '%s%s' "${_unpush_symbol}" "$count_head";;
+        100111111) printf '%s%s%s' "${_unpush_unpull_symbol}" "$count_behind" "$count_head";;
+        010111111) printf '%s%s%s' "${_d_unpull_symbol}" "$count_behind" "$count_dirty";;
+        001111111) printf '%s%s%s' "${_d_unpush_symbol}" "$count_head" "$count_dirty";;
+        000111111) printf '%s%s%s' "${_d_unpush_unpull_symbol}" "$count_behind-$count_head" "$count_dirty";;
 
-        000111111) printf '%s%s' "$_d_unpush_unpull_symbol" "$git_count" ;;
-        100111111) printf '%s%s' "$_unpushed_unpulled_symbol" "$git_count" ;;
-        001111111) printf '%s%s' "$_dirty_unpushed_symbol" "$git_count" ;;
-        010111111) printf '%s%s' "$_dirty_unpulled_symbol" "$git_count" ;;
-        110111111) printf '%s%s' "$_unpulled_symbol" "$git_count" ;;
+        011001111) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}" "$count_dirty";;
+        011000111) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}" "$count_dirty";;
+        011001101) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011001011) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}" "$count_dirty" ;;
+        011001001) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011000101) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011000001) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011011111) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}" "$count_dirty";;
+        011010111) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}" "$count_dirty";;
+        011010101) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$count_dirty" ;;
+        011010001) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011011011) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_untracked_symbol}" "$count_dirty";;
+        011011101) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011110111) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}" "$count_dirty";;
+        011110011) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_untracked_symbol}" "$count_dirty";;
+        011111011) printf '%s%s' "${_d_synced_symbol}${_untracked_symbol}" "$count_dirty";;
+        011101001) printf '%s%s' "${_d_synced_symbol}${_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011101001) printf '%s%s' "${_d_synced_symbol}${_unstage_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        011111110) printf '%s%s' "${_d_synced_symbol}${_renamed_symbol}" "$count_dirty";;
+        011110110) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_renamed_symbol}" "$count_dirty";;
+        011110010) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        011010100) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty" ;;
+        011010000) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        011001010) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        011001000) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        011000110) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_renamed_symbol}" "$count_dirty";;
+        011000010) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        011000000) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        011000100) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        011010010) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        011011010) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        011111010) printf '%s%s' "${_d_synced_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
 
-        011001111) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}" "$git_count";;
-        011000111) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}" "$git_count";;
-        011001101) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
-        011001011) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}" "$git_count" ;;
-        011001001) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        011000101) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count";;
-        011000001) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        011011111) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}" "$git_count";;
-        011010111) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}" "$git_count";;
-        011010101) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count" ;;
-        011010001) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        011011011) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_untracked_symbol}" "$git_count";;
-        011011101) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_deleted_file_symbol}" "$git_count";;
-        011110111) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}" "$git_count";;
-        011110011) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_untracked_symbol}" "$git_count";;
-        011111011) printf '%s%s' "${_d_synced_symbol}${_untracked_symbol}" "$git_count";;
-        011101001) printf '%s%s' "${_d_synced_symbol}${_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        011101001) printf '%s%s' "${_d_synced_symbol}${_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
-        011111110) printf '%s%s' "${_d_synced_symbol}${_renamed_symbol}" "$git_count";;
-        011110110) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
-        011110010) printf '%s%s' "${_d_synced_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        011010100) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count" ;;
-        011010000) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        011001010) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        011001000) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        011000110) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
-        011000010) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        011000000) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        011000100) printf '%s%s' "${_d_synced_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        011010010) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        011011010) printf '%s%s' "${_d_synced_symbol}${_stage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        011111010) printf '%s%s' "${_d_synced_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-
-        001001111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}" "$git_count";;
-        001000111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}" "$git_count";;
-        001001101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
-        001001011) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}" "$git_count";;
-        001001001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        001000101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count";;
-        001000001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        001011111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}" "$git_count";;
-        001010111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}" "$git_count" ;;
-        001010101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$git_count" ;;
-        001010001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        001011011) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_untracked_symbol}" "$git_count";;
-        001011101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_deleted_file_symbol}" "$git_count";;
-        001110111) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}" "$git_count";;
-        001110011) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_untracked_symbol}" "$git_count";;
-        001111011) printf '%s%s' "${_d_unpush_unpull_symbol}${_untracked_symbol}" "$git_count";;
-        001101001) printf '%s%s' "${_d_unpush_unpull_symbol}${_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$git_count";;
-        001101101) printf '%s%s' "${_d_unpush_unpull_symbol}${_unstage_symbol}${_deleted_file_symbol}" "$git_count";;
-        001111110) printf '%s%s' "${_d_unpush_unpull_symbol}${_renamed_symbol}" "$git_count";;
-        001110110) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
-        001110010) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        001010100) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count" ;;
-        001010000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        001001010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        001001000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        001000110) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_renamed_symbol}" "$git_count";;
-        001000010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        001000000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        001000100) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$git_count";;
-        001010010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        001011010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-        001111010) printf '%s%s' "${_d_unpush_unpull_symbol}${_untracked_symbol}${_renamed_symbol}" "$git_count";;
-
-        101111111) printf '%s%s' "${_unpushed_symbol}" "$git_count" ;; # eg. ↑
-        111111111) printf '%s' "${_synced_symbol}" ;; # eg. ✔
-
+        001001111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}" "$count_dirty";;
+        001000111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}" "$count_dirty";;
+        001001101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001001011) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}" "$count_dirty";;
+        001001001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001000101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001000001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001011111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}" "$count_dirty";;
+        001010111) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}" "$count_dirty" ;;
+        001010101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}" "$count_dirty" ;;
+        001010001) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001011011) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_untracked_symbol}" "$count_dirty";;
+        001011101) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001110111) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}" "$count_dirty";;
+        001110011) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_untracked_symbol}" "$count_dirty";;
+        001111011) printf '%s%s' "${_d_unpush_unpull_symbol}${_untracked_symbol}" "$count_dirty";;
+        001101001) printf '%s%s' "${_d_unpush_unpull_symbol}${_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001101101) printf '%s%s' "${_d_unpush_unpull_symbol}${_unstage_symbol}${_deleted_file_symbol}" "$count_dirty";;
+        001111110) printf '%s%s' "${_d_unpush_unpull_symbol}${_renamed_symbol}" "$count_dirty";;
+        001110110) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_renamed_symbol}" "$count_dirty";;
+        001110010) printf '%s%s' "${_d_unpush_unpull_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        001010100) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty" ;;
+        001010000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        001001010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        001001000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        001000110) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_renamed_symbol}" "$count_dirty";;
+        001000010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        001000000) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_untracked_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        001000100) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_unstage_symbol}${_newfile_symbol}${_deleted_file_symbol}${_renamed_symbol}" "$count_dirty";;
+        001010010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_newfile_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        001011010) printf '%s%s' "${_d_unpush_unpull_symbol}${_stage_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
+        001111010) printf '%s%s' "${_d_unpush_unpull_symbol}${_untracked_symbol}${_renamed_symbol}" "$count_dirty";;
         *) echo -n "?" ;;
     esac
 
