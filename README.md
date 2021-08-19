@@ -142,7 +142,7 @@ Custom Prompt Shell Settings for Bash
 
 #### joy
 
-![Alt Special](images/joy.png?raw=true "special")
+![Alt Joy](images/joy.png?raw=true "joy")
 
 #### light_theme
 
