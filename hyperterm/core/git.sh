@@ -6,7 +6,7 @@ function _symbols() {
     # Import colors
     _colors_bash "$@"
 
-    __ps="$(printf '%b\u7C%s' "${BOLD}${LEMON}" "${RESET}")" # |
+    __ps="$(printf '%b\u7C%b' "${BOLD}${LEMON}" "${RESET}")" # |
     __ss="$(printf '%b\u2714' "${BOLD}${CYAN}")" # ✔
     __dss="$(printf '%b\u002A' "${BOLD}${RED}")" # ∗
     __ahs="$(printf '%b\u2191' "${BOLD}${CYAN}")" # ↑

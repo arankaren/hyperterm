@@ -25,7 +25,7 @@ special=("\n\
 \[${BOLD}${CYAN}\]hist:\!\[$RESET\]\n\
 \[${BOLD}${GREY}\]\
 \D{%Y-%m-%d}@\D{%I:%M%p}\[$RESET\] \
-\$(exitstatus)\[$_PROMPT_RESET\]\
+\$(exitstatus)\[$RESET\]\
 \$(__prompt_git)\n\
 \[${BOLD}${GREEN}\]$SYMBOL \[$RESET\]")
 

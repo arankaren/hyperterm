@@ -6,16 +6,17 @@ unset simple
 _colors_bash "$@"
 
 __time_out_command() {
-    cut -d\  -f1 /proc/loadavg
+    awk '{ print $1 }' /proc/loadavg
 }
 
 : "${simple:=\n\
 \[${RESET}\]\
 \[${BOLD}${GREY}\]\
-\$(__time_out_command) \
-\$(exitstatus)\
-\$(__prompt_git)\
-\[${BOLD}${GREEN}\] $SYMBOL \[$RESET\]}"
+\$(exitstatus)\[$RESET\] \
+\[${BOLD}${GREY}\]\
+\$(__time_out_command)\[$RESET\]\
+\$(__prompt_git)\n\
+\[${BOLD}${GREEN}\]$SYMBOL \[$RESET\]}"
 
 unset _psi
 : "${_psi:=\[${BOLD}${CYAN}\]=>\[$RESET\] }"
