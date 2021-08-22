@@ -2,9 +2,6 @@
 
 # System information
 function ii() {
-
-    my_ip "$1" &> /dev/null
-
     case ${LANG/_*/} in
         es)
             printf '%s\e[1;36m%s\e[m\n' "Has iniciado sesión en " "$(hostname -f)"
