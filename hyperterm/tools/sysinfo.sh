@@ -2,6 +2,7 @@
 
 # System information
 function ii() {
+    __network "$1" > /dev/null 2>&1  # import network
     case ${LANG/_*/} in
         es)
             printf '%s\e[1;36m%s\e[m\n' "Has iniciado sesión en " "$(hostname -f)"
@@ -12,7 +13,6 @@ function ii() {
             printf '\n\e[1;32m%s\e[m\n%s\n' "Estadísticas de la memoria:" "$(free)"
             printf '\n\e[1;32m%s\e[m\n' "Dirección IP Local:"
             printf '%s\n' "${MY_IP:-"No conectado"}"
-            my_isp "$1" &> /dev/null
             printf '\n\e[1;32m%s\e[m\n' "Dirección ISP:"
             printf '%s\n' "${MY_ISP:-"No conectado"}"
             ;;
@@ -25,7 +25,6 @@ function ii() {
             printf '\n\e[1;32m%s\e[m\n%s\n' "Memory stats:" "$(free)"
             printf '\n\e[1;32m%s\e[m\n' "Local IP Address:"
             printf '%s\n' "${MY_IP:-"Not connected"}"
-            my_isp "$1" &> /dev/null
             printf '\n\e[1;32m%s\e[m\n' "ISP Address:"
             printf '%s\n' "${MY_ISP:-"Not connected"}"
             ;;
