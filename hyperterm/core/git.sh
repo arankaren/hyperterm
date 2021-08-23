@@ -284,7 +284,6 @@ function _prompt_get_git_status() {
         011110011) printf '%s%s' "${__ps}${__dss}${__nfs}${__uts}" "$count_dirty";;
         011111011) printf '%s%s' "${__ps}${__dss}${__uts}" "$count_dirty";;
         011101001) printf '%s%s' "${__ps}${__dss}${__usts}${__uts}${__dfs}" "$count_dirty";;
-        011001111) printf '%s%s' "${__ps}${__dss}${__stusts}" "$count_dirty";;
         011111110) printf '%s%s' "${__ps}${__dss}${__rns}" "$count_dirty";;
         011110110) printf '%s%s' "${__ps}${__dss}${__nfs}${__rns}" "$count_dirty";;
         011110010) printf '%s%s' "${__ps}${__dss}${__nfs}${__uts}${__rns}" "$count_dirty";;
