@@ -150,7 +150,7 @@ ___upstream="$(git rev-parse --symbolic-full-name --abbrev-ref "@{upstream}" 2> 
 
 function _git_behind_count() {
     local __behind_count
-    if [[ ! -z $___upstream ]]; then
+    if [[ -n $___upstream ]]; then
         __behind_count="$(git rev-list --left-right --count "$___upstream"...HEAD | cut -f1 2> /dev/null)"
         case $__behind_count in
             0) echo -n '';;
@@ -161,7 +161,7 @@ function _git_behind_count() {
 
 function _git_ahead_count() {
     local __ahead_count
-    if [[ ! -z $___upstream ]]; then
+    if [[ -n $___upstream ]]; then
         __ahead_count="$(git rev-list --left-right --count "$___upstream"...HEAD | cut -f2 2> /dev/null)"
         case $__ahead_count in
             0) echo -n '';;
