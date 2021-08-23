@@ -146,22 +146,28 @@ function _git_dirty_count() {
     fi
 }
 
+___upstream="$(git rev-parse --symbolic-full-name --abbrev-ref "@{upstream}" 2> /dev/null)"
+
 function _git_behind_count() {
     local __behind_count
-    __behind_count="$(git rev-list --left-right --count origin/master...HEAD | cut -f1 2> /dev/null)"
-    case $__behind_count in
-        0) echo -n '';;
-        *) echo -n "$__behind_count";;
-    esac
+    if [[ -s $___upstream ]]; then
+        __behind_count="$(git rev-list --left-right --count "$___upstream"...HEAD | cut -f1 2> /dev/null)"
+        case $__behind_count in
+            0) echo -n '';;
+            *) echo -n "$__behind_count";;
+        esac
+    fi
 }
 
 function _git_ahead_count() {
     local __ahead_count
-    __ahead_count="$(git rev-list --left-right --count origin/master...HEAD | cut -f2 2> /dev/null)"
-    case $__ahead_count in
-        0) echo -n '';;
-        *) echo -n "$__ahead_count";;
-    esac
+    if [[ -s $___upstream ]]; then
+        __ahead_count="$(git rev-list --left-right --count "$___upstream"...HEAD | cut -f2 2> /dev/null)"
+        case $__ahead_count in
+            0) echo -n '';;
+            *) echo -n "$__ahead_count";;
+        esac
+    fi
 }
 # ends counter on git
 
@@ -278,7 +284,7 @@ function _prompt_get_git_status() {
         011110011) printf '%s%s' "${__ps}${__dss}${__nfs}${__uts}" "$count_dirty";;
         011111011) printf '%s%s' "${__ps}${__dss}${__uts}" "$count_dirty";;
         011101001) printf '%s%s' "${__ps}${__dss}${__usts}${__uts}${__dfs}" "$count_dirty";;
-        011101001) printf '%s%s' "${__ps}${__dss}${__usts}${__dfs}" "$count_dirty";;
+        011001111) printf '%s%s' "${__ps}${__dss}${__stusts}" "$count_dirty";;
         011111110) printf '%s%s' "${__ps}${__dss}${__rns}" "$count_dirty";;
         011110110) printf '%s%s' "${__ps}${__dss}${__nfs}${__rns}" "$count_dirty";;
         011110010) printf '%s%s' "${__ps}${__dss}${__nfs}${__uts}${__rns}" "$count_dirty";;
@@ -312,6 +318,7 @@ function _prompt_get_git_status() {
         001111011) printf '%s%s' "${__ps}${__duus}${__uts}" "$count_dirty";;
         001101001) printf '%s%s' "${__ps}${__duus}${__usts}${__uts}${__dfs}" "$count_dirty";;
         001101101) printf '%s%s' "${__ps}${__duus}${__usts}${__dfs}" "$count_dirty";;
+        111001111) printf '%s%s' "${__ps}${__duus}${__stusts}" "$count_dirty";;
         001111110) printf '%s%s' "${__ps}${__duus}${__rns}" "$count_dirty";;
         001110110) printf '%s%s' "${__ps}${__duus}${__nfs}${__rns}" "$count_dirty";;
         001110010) printf '%s%s' "${__ps}${__duus}${__nfs}${__uts}${__rns}" "$count_dirty";;
