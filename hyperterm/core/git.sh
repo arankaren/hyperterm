@@ -6,22 +6,22 @@ function _symbols() {
     # Import colors
     _colors_bash "$@"
 
-    __ps="$(printf '%b\u7C%b' "${BOLD}${LEMON}" "${RESET}")" # |
-    __ss="$(printf '%b\u2714' "${BOLD}${CYAN}")" # ✔
-    __dss="$(printf '%b\u002A' "${BOLD}${RED}")" # ∗
-    __ahs="$(printf '%b\u2191' "${BOLD}${CYAN}")" # ↑
-    __bhs="$(printf '%b\u2193' "${BOLD}${RED}")" # ↓
-    __duphs="$(printf '%b\u25B2' "${BOLD}${YELLOW}")" # ▲
-    __duplls="$(printf '%b\u25BC' "${BOLD}${RED}")" # ▼
-    __duus="$(printf '%bdu' "${BOLD}${CYAN}")" # du
-    __upulls="$(printf '%b\u25BD' "${BOLD}${GREEN}")" # ▽
-    __sts="$(printf '%b\u2192\u004D' "${BOLD}${CYAN}")" # →M
-    __usts="$(printf '%b\u2190\u004D' "${BOLD}${RED}")" # ←M
-    __stusts="$(printf '%b<M>' "${BOLD}${RED}")" # <M>
-    __uts="$(printf '%b\u003F' "${BOLD}${RED}")" # ?
-    __nfs="$(printf '%b\u002B' "${BOLD}${CYAN}")" # +
-    __dfs="$(printf '%bD' "${BOLD}${RED}")" # D
-    __rns="$(printf '%b\u2387 ' "${BOLD}${RED}")" # ⎇
+    __ps="$(printf '%b%b%b' "${BOLD}${LEMON}" "\x7C" "${RESET}")" # |
+    __ss="$(printf '%b%b' "${BOLD}${CYAN}" "\xE2\x9C\x94")" # ✔
+    __dss="$(printf '%b%b' "${BOLD}${RED}" "\x2A")" # ∗
+    __ahs="$(printf '%b%b' "${BOLD}${CYAN}" "\xEA\x86\x91")" # ↑
+    __bhs="$(printf '%b%b' "${BOLD}${RED}" "\xE2\x86\x93")" # ↓
+    __duphs="$(printf '%b%b' "${BOLD}${YELLOW}" "\xE2\x96\x82" )" # ▲
+    __duplls="$(printf '%b%b' "${BOLD}${RED}" "\xE2\x96\xBC")" # ▼
+    __duus="$(printf '%b%b%b' "${BOLD}${CYAN}" "\x64" "\x75")" # du
+    __upulls="$(printf '%b%b' "${BOLD}${GREEN}" "\xE2\x96\xBD")" # ▽
+    __sts="$(printf '%b%b%b' "${BOLD}${CYAN}" "\xE2\x86\x92" "\x40")" # →M
+    __usts="$(printf '%b%b%b' "${BOLD}${RED}" "\xE2\x86\x90" "\x40")" # ←M
+    __stusts="$(printf '%b%b%b%b' "${BOLD}${RED}" "\x3C" "\x4D" "\x3E")" # <M>
+    __uts="$(printf '%b%b' "${BOLD}${RED}" "\x3F")" # ?
+    __nfs="$(printf '%b%b' "${BOLD}${CYAN}" "\x2B")" # +
+    __dfs="$(printf '%b%b' "${BOLD}${RED}" "\x44")" # D
+    __rns="$(printf '%b%b%b' "${BOLD}${RED}" "\xE2\x8E\x87" "\x20")" # ⎇
 }
 
 function _get_git_branch() {
