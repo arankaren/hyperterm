@@ -9,7 +9,7 @@ function _symbols() {
     __ps="$(printf '%b%b%b' "${BOLD}${LEMON}" "\x7C" "${RESET}")" # |
     __ss="$(printf '%b%b' "${BOLD}${CYAN}" "\xE2\x9C\x94")" # ✔
     __dss="$(printf '%b%b' "${BOLD}${RED}" "\x2A")" # ∗
-    __ahs="$(printf '%b%b' "${BOLD}${CYAN}" "\xEA\x86\x91")" # ↑
+    __ahs="$(printf '%b%b' "${BOLD}${CYAN}" "\xE2\x86\x91")" # ↑
     __bhs="$(printf '%b%b' "${BOLD}${RED}" "\xE2\x86\x93")" # ↓
     __duphs="$(printf '%b%b' "${BOLD}${YELLOW}" "\xE2\x96\x82" )" # ▲
     __duplls="$(printf '%b%b' "${BOLD}${RED}" "\xE2\x96\xBC")" # ▼
