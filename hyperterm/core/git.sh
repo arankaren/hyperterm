@@ -350,9 +350,8 @@ _prompt_get_git_info() {
     # Import colors
     _colors_bash "$@"
 
-    # Grab icon and branch
-    branch=$(printf '%b' "\xEE\x82\xA0")
-    branch+=$(_get_git_branch)
+    # Grab branch
+    branch=$(_get_git_branch)
 
     # If there are any branches
     if [[ -n $branch ]]; then
