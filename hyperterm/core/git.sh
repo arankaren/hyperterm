@@ -15,8 +15,8 @@ function _symbols() {
     __duplls="$(printf '%b%b' "${BOLD}${RED}" "\xE2\x96\xBC")" # ▼
     __duus="$(printf '%b%b%b' "${BOLD}${CYAN}" "\x64" "\x75")" # du
     __upulls="$(printf '%b%b' "${BOLD}${GREEN}" "\xE2\x96\xBD")" # ▽
-    __sts="$(printf '%b%b%b' "${BOLD}${CYAN}" "\xE2\x86\x92" "\x40")" # →M
-    __usts="$(printf '%b%b%b' "${BOLD}${RED}" "\xE2\x86\x90" "\x40")" # ←M
+    __sts="$(printf '%b%b%b' "${BOLD}${CYAN}" "\xE2\x86\x92" "\x4D")" # →M
+    __usts="$(printf '%b%b%b' "${BOLD}${RED}" "\xE2\x86\x90" "\x4D")" # ←M
     __stusts="$(printf '%b%b%b%b' "${BOLD}${RED}" "\x3C" "\x4D" "\x3E")" # <M>
     __uts="$(printf '%b%b' "${BOLD}${RED}" "\x3F")" # ?
     __nfs="$(printf '%b%b' "${BOLD}${CYAN}" "\x2B")" # +
@@ -350,19 +350,16 @@ _prompt_get_git_info() {
     # Import colors
     _colors_bash "$@"
 
-    # Grab the branch
-    branch="$(_get_git_branch)"
+    # Grab icon and branch
+    branch=$(printf '%b' "\xEE\x82\xA0")
+    branch+=$(_get_git_branch)
 
     # If there are any branches
     if [[ -n $branch ]]; then
-        # Printf the branch
-        output="$branch"
-
         # Add on the git status
-        output="$output$(_prompt_get_git_status "$@")"
-
+        output=$(_prompt_get_git_status "$@")
         # Printf our output
-        printf '%b%s%b' "${BOLD}${LEMON}" "git:($output" "${BOLD}${LEMON})"
+        printf '%b%s%b' "${BOLD}${LEMON}" "git:($branch$output" "${BOLD}${LEMON})"
     fi
 }
 
