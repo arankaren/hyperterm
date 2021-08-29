@@ -47,6 +47,7 @@ themes:
     - shellcheck hyperterm/themes/light_theme.sh
     - shellcheck hyperterm/themes/minterm.sh
     - shellcheck hyperterm/themes/pure.sh
+    - shellcheck hyperterm/themes/simple.sh
     - shellcheck hyperterm/themes/special.sh
 
 tools:

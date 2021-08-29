@@ -26,6 +26,7 @@ tasks:
       shellcheck hyperterm/hyperterm/themes/light_theme.sh
       shellcheck hyperterm/hyperterm/themes/minterm.sh
       shellcheck hyperterm/hyperterm/themes/pure.sh
+      shellcheck hyperterm/hyperterm/themes/simple.sh
       shellcheck hyperterm/hyperterm/themes/special.sh
   - tools: |
       shellcheck hyperterm/hyperterm/tools/aliases.sh
