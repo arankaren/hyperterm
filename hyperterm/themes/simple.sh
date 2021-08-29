@@ -14,7 +14,8 @@ __time_out_command() {
 \[${BOLD}${GREY}\]\
 \$(exitstatus)\[$RESET\] \
 \[${BOLD}${GREY}\]\
-\$(__time_out_command)\[$RESET\]\
+\$(__time_out_command)\[$RESET\] \
+\[${BOLD}${WHITE}\]\W\[$RESET\]\
 \$(__prompt_git)\n\
 \[${BOLD}${GREEN}\]$SYMBOL \[$RESET\]}"
 
